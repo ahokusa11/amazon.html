@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在庫管理 | Amazonギフト券</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>在庫管理</h1>
+    </header>
+    <div class="container">
+        <h2>Amazonギフト券コードの追加</h2>
+        <form id="stock-form">
+            <label for="code">ギフト券コード:</label>
+            <input type="text" id="code" name="code" required>
+            <label for="quantity">数量:</label>
+            <input type="number" id="quantity" name="quantity" min="1" required>
+            <button type="submit">追加</button>
+        </form>
+        <div id="stock-list">
+            <h3>現在の在庫</h3>
+            <ul id="code-list"></ul>
+        </div>
+    </div>
+    <script>
+        const stockForm = document.getElementById('stock-form');
+        const codeList = document.getElementById('code-list');
+
+        stockForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const code = document.getElementById('code').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            let codes = JSON.parse(localStorage.getItem('codes') || '[]');
+            for (let i = 0; i < quantity; i++) {
+                codes.push(code);
+            }
+            localStorage.setItem('codes', JSON.stringify(codes));
+            displayCodes();
+            stockForm.reset();
+        });
+
+        function displayCodes() {
+            codeList.innerHTML = '';
+            let codes = JSON.parse(localStorage.getItem('codes') || '[]');
+            codes.forEach((code, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${index + 1}. ${code}`;
+                codeList.appendChild(li);
+            });
+        }
+
+        displayCodes();
+    </script>
+</body>
+</html>
